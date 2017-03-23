@@ -32,9 +32,10 @@ int main(int argc, char **argv)
   poppler::page* page = doc->create_page(1);
 
   // Create a poppler::rectangle with floats
+  // capture these coordinates from some sort of QT mouse event
+  // then store the rectangles and associated pages/documents
   poppler::rectf rec = poppler::rectangle<double>(0.0, 0.0, 100.0, 350.0);
   // Crop the page with the rectangle? Not sure what p is doing here.
-  // UNUSED
   poppler::rectf p = page->page_rect(poppler::page_box_enum::crop_box);
 
   // Get coordinates? Example:
