@@ -1,16 +1,15 @@
+//     CookieCutter
 // toy program for dealing with PDFs
 // g++ this.cpp -lpoppler-cpp -lpoppler-qt4
-//              ^ link poppler from /lib?.. I forget where it is
-// commented, a little while after writing (ehem, bad idea)
-
-
-// Questions:
+//              ^ link poppler located in /lib
+//     Questions:
 // why don't spaces print out after crop
 // what's with the ->
-
-// TODO:
-// get a page up with qt and maybe some tabs up
-// then it's basicaly open
+//     Roadmap:
+// Get a page up with QT and maybe some tabs up.
+// Have the user select a color, and then drag for rectangles.
+// Each color will be a column, and each document/page will be a row.
+// Then it's basically done.
 
 #include <iostream>
 
@@ -24,23 +23,23 @@ int main(int argc, char **argv)
   // Load the document into a poppler:document
   poppler::document* doc = poppler::document::load_from_file(argv[1]);
 
-  // Print count of pages?
+  // Print count of pages
   //std::cout << doc->pages() << std::endl;
 
   // Create poppler::page from index
-  // cpp -> means a method from a pointer?
+  // In cpp -> means a method from a pointer...?
   poppler::page* page = doc->create_page(1);
 
-  // Create a poppler::rectangle with floats
+  // Create a poppler::rectangle with floats (hence f)
   // capture these coordinates from some sort of QT mouse event
   // then store the rectangles and associated pages/documents
   poppler::rectf rec = poppler::rectangle<double>(0.0, 0.0, 100.0, 350.0);
-  // Crop the page with the rectangle? Not sure what p is doing here.
-  poppler::rectf p = page->page_rect(poppler::page_box_enum::crop_box);
 
-  // Get coordinates? Example:
+  // Get the page crop_box (that is it's coordinates?)
+  // For Example, if printed:
   // [0,0 566.929+708.661]
-  // std::cout << p<< std::endl;
+  poppler::rectf p = page->page_rect(poppler::page_box_enum::crop_box);
+  // std::cout << p << std::endl;
 
   // Crops the page with `rec`, but doesn't print out spaces (why not?)
   poppler::ustring str = page->text(rec, poppler::page::raw_order_layout);
@@ -50,6 +49,6 @@ int main(int argc, char **argv)
   poppler::ustring test = page->text();
   std::cout << test.to_latin1() << std::endl;
 
-  // return without errorr
+  // return without error
   return 0;
 }
