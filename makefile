@@ -1,2 +1,2 @@
 all:
-	g++ cutter.cpp `pkg-config --cflags poppler-qt4 QtCore poppler-cpp` `pkg-config --libs poppler-cpp poppler-qt4`
+	g++  `pkg-config --cflags poppler-qt5 poppler-cpp Qt5Core Qt5Gui` `pkg-config --libs poppler-qt5 poppler-cpp Qt5Core Qt5Gui Qt5Widgets` -fPIC cutter.cpp
