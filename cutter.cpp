@@ -14,14 +14,14 @@
 #include <QMouseEvent>
 
 class PageLabel : public QLabel {
-  Q_OBJECT
+  //  Q_OBJECT
 public:
   PageLabel(QWidget* parent=0);
   void mousePressEvent(QMouseEvent * ev);
 };
 
 PageLabel::PageLabel(QWidget* parent) : QLabel(parent) {
-0}
+}
 
 void PageLabel::mousePressEvent(QMouseEvent *ev)
 {
@@ -45,6 +45,7 @@ int main(int argc, char **argv) {
   Poppler::Document* document = Poppler::Document::load(argv[1]);
   Poppler::Page *page = document->page(0);
   QSize dims = page->pageSize();
+  qDebug() << dims.width() << " and " << dims.height();
 
   window->resize(dims.width(),dims.height());
 
