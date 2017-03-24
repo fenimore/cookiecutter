@@ -10,8 +10,25 @@
 #include <QtGui/QImage>
 #include <QPixmap>
 #include <QSize>
+#include <QDebug>
+#include <QMouseEvent>
 
-//#include <QGraphicsScene>
+class PageLabel : public QLabel {
+  Q_OBJECT
+public:
+  PageLabel(QWidget* parent=0);
+  void mousePressEvent(QMouseEvent * ev);
+};
+
+PageLabel::PageLabel(QWidget* parent) : QLabel(parent) {
+0}
+
+void PageLabel::mousePressEvent(QMouseEvent *ev)
+{
+  QString x = QString::number(ev->x());
+  QString y = QString::number(ev->y());
+  qDebug() << x << "," << y;
+}
 
 int main(int argc, char **argv) {
   // Must have!
@@ -45,7 +62,7 @@ int main(int argc, char **argv) {
       QImage image = page->renderToImage();
       // image.save();
       // sets parent of label to main window
-      QLabel *label = new QLabel("Image");
+      PageLabel* label = new PageLabel();
       label->setPixmap(QPixmap::fromImage(image));
       tabs->addTab(label,"tab");
       delete page;
