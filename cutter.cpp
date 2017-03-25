@@ -1,5 +1,7 @@
 //     CookieCutter
 #include <iostream>
+#include <vector>
+#include <cmath>
 
 #include <poppler-qt5.h>
 #include <poppler-document.h>
@@ -14,30 +16,31 @@
 #include <QSize>
 #include <QDebug>
 #include <QMouseEvent>
+#include <QRectF>
 
-#include <vector>
+
 
 using namespace std;
 
 struct Point {
-  int x, y;
+  double x, y;
   //Point();
-  Point New(int, int);
+  Point New(double, double);
 };
 
-Point NewPoint(int a, int b) {
+Point NewPoint(double a, double b) {
   Point result = Point();
   result.x = a;
   result.y = b;
   return result;
 }
 
-vector<Point> NewBox(Point a, Point z) {
-  Point x = a;
-  Point y = z;
-  Point w = NewPoint(z.x, a.y);
-  Point h = NewPoint(a.x, z.y);
-  return vector<Point>{x, y, w, h};
+vector<double> NewBox(Point orig, Point dest) {
+  double x = orig.x;
+  double y = orig.y;
+  double w = std::abs(orig.x - dest.x);
+  double h = std::abs(orig.y - dest.y);
+  return vector<double>{x, y, w, h};
 }
 
 class PageLabel : public QLabel {
@@ -47,6 +50,7 @@ public:
   void mousePressEvent(QMouseEvent * ev);
   // void paintEvent(QPaintEvent * e);
   Point lastVec;
+  Poppler::Page *page;
 };
 
 PageLabel::PageLabel(QWidget* parent) : QLabel(parent) {
@@ -54,11 +58,14 @@ PageLabel::PageLabel(QWidget* parent) : QLabel(parent) {
 
 void PageLabel::mousePressEvent(QMouseEvent *ev) {
   qDebug() << lastVec.x << "," << lastVec.y;
-  int x = ev->x();
-  int y = ev->y();
+  double x = ev->x();
+  double y = ev->y();
   Point nextVec = NewPoint(x, y);
-  vector<Point> rec = NewBox(lastVec, nextVec);
+  vector<double> rec = NewBox(lastVec, nextVec);
   // cout << rec[0].x << " " << rec[1].y << " "  << " " << endl;
+  QRectF crop = QRectF(rec[0], rec[1], rec[2], rec[3]);
+  QString str = page->text(crop);//, //poppler::page::raw_order_layout);
+  //cout << str.to_latin1() << endl;
   lastVec.x = x;
   lastVec.y = y;
 }
@@ -106,6 +113,7 @@ int main(int argc, char **argv) {
       // image.save();
       // sets parent of label to main window
       PageLabel* label = new PageLabel();
+      label->page = page;
       label->setPixmap(QPixmap::fromImage(image));
       tabs->addTab(label,"tab");
       delete page;
