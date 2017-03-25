@@ -62,10 +62,9 @@ void PageLabel::mousePressEvent(QMouseEvent *ev) {
   double y = ev->y();
   Point nextVec = NewPoint(x, y);
   vector<double> rec = NewBox(lastVec, nextVec);
-  // cout << rec[0].x << " " << rec[1].y << " "  << " " << endl;
   QRectF crop = QRectF(rec[0], rec[1], rec[2], rec[3]);
-  QString str = page->text(crop);//, //poppler::page::raw_order_layout);
-  //cout << str.to_latin1() << endl;
+  QString str = page->text(crop, Poppler::Page::RawOrderLayout);
+  qDebug() << str;
   lastVec.x = x;
   lastVec.y = y;
 }
@@ -108,15 +107,16 @@ int main(int argc, char **argv) {
 
   for (int i = 0; i < document->numPages(); ++i) {
     Poppler::Page *page = document->page(i);
+    cout << page << endl;
+    PageLabel *label = new PageLabel();
     if (page) {
       QImage image = page->renderToImage();
       // image.save();
       // sets parent of label to main window
-      PageLabel* label = new PageLabel();
       label->page = page;
       label->setPixmap(QPixmap::fromImage(image));
       tabs->addTab(label,"tab");
-      delete page;
+      //delete page;
     }
   }
 
