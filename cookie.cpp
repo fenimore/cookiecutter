@@ -42,7 +42,8 @@ int main(int argc, char **argv)
   // std::cout << p << std::endl;
 
   // Crops the page with `rec`, but doesn't print out spaces (why not?)
-  poppler::ustring str = page->text(rec, poppler::page::raw_order_layout);
+  //poppler::ustring str = page->text(rec, poppler::page::raw_order_layout);
+  QString str = page->text( QRectF(), Poppler::Page::RawOrderLayout ).toUtf8()
   std::cout << str.to_latin1() << std::endl;
 
   // Prints the text from the page... das it.

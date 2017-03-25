@@ -28,13 +28,6 @@ struct Point {
   Point New(double, double);
 };
 
-Point NewPoint(double a, double b) {
-  Point result = Point();
-  result.x = a;
-  result.y = b;
-  return result;
-}
-
 vector<double> NewBox(Point orig, Point dest) {
   double x = orig.x;
   double y = orig.y;
@@ -59,21 +52,15 @@ PageLabel::PageLabel(QWidget* parent) : QLabel(parent) {
 }
 
 void PageLabel::mousePressEvent(QMouseEvent *ev) {
-  qDebug() << "Press Coord: " << pressVec.x << "," << pressVec.y;
+  qDebug() << "Press:   " << pressVec.x << ", " << pressVec.y;
   double x = ev->x();
   double y = ev->y();
   pressVec.x = x;
   pressVec.y = y;
-  //Point nextVec = NewPoint(x, y);
-  //
-
-    //ebug() << str;
-
-
 }
 
 void PageLabel::mouseReleaseEvent(QMouseEvent *ev) {
-  qDebug() << "Release Coord: " << liftVec.x;
+  qDebug() << "Release: " << liftVec.x << ", " << liftVec.y;
   double x = ev->x();
   double y = ev->y();
   liftVec.x = x;
@@ -83,7 +70,7 @@ void PageLabel::mouseReleaseEvent(QMouseEvent *ev) {
   vector<double> rec = NewBox(pressVec, liftVec);
   QRectF crop = QRectF(rec[0], rec[1], rec[2], rec[3]);
   QString str = page->text(crop, Poppler::Page::RawOrderLayout);
-  qDebug() << str;
+  qDebug() << "Extract:"  << "\n"<< str;
 }
 
 // void PageLabel::paintEvent(QPaintEvent *e) {
@@ -103,21 +90,15 @@ int main(int argc, char **argv) {
   QWidget *centralWidget = new QWidget(window);
   QTabWidget *tabs = new QTabWidget(centralWidget);
   tabs->setTabsClosable(true);
-  //tabs->setFixedSize(495, 495);
-  //tabs->addTab(new QWidget(),"TAB 1");
-  //
   // Load the document into a poppler:document
   Poppler::Document* document = Poppler::Document::load(argv[1]);
   Poppler::Page *page = document->page(0);
   QSize dims = page->pageSize();
   qDebug() << dims.width() << " and " << dims.height();
-
   window->resize(dims.width(),dims.height());
 
-
-
   if (!document) {
-    std::cout << "No Load" << std::endl;
+    std::cout << "Failure Loading" << std::endl;
   }
 
   document->setRenderHint(Poppler::Document::Antialiasing, true);
@@ -132,7 +113,7 @@ int main(int argc, char **argv) {
       // sets parent of label to main window
       label->page = page;
       label->setPixmap(QPixmap::fromImage(image));
-      tabs->addTab(label,"tab");
+      tabs->addTab(label,argv[1]);
       //delete page;
     }
   }
