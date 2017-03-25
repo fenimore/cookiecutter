@@ -48,8 +48,10 @@ class PageLabel : public QLabel {
 public:
   PageLabel(QWidget* parent=0);
   void mousePressEvent(QMouseEvent * ev);
+  void mouseReleaseEvent(QMouseEvent * ev);
   // void paintEvent(QPaintEvent * e);
-  Point lastVec;
+  Point pressVec;
+  Point liftVec;
   Poppler::Page *page;
 };
 
@@ -57,16 +59,31 @@ PageLabel::PageLabel(QWidget* parent) : QLabel(parent) {
 }
 
 void PageLabel::mousePressEvent(QMouseEvent *ev) {
-  qDebug() << lastVec.x << "," << lastVec.y;
+  qDebug() << "Press Coord: " << pressVec.x << "," << pressVec.y;
   double x = ev->x();
   double y = ev->y();
-  Point nextVec = NewPoint(x, y);
-  vector<double> rec = NewBox(lastVec, nextVec);
+  pressVec.x = x;
+  pressVec.y = y;
+  //Point nextVec = NewPoint(x, y);
+  //
+
+    //ebug() << str;
+
+
+}
+
+void PageLabel::mouseReleaseEvent(QMouseEvent *ev) {
+  qDebug() << "Release Coord: " << liftVec.x;
+  double x = ev->x();
+  double y = ev->y();
+  liftVec.x = x;
+  liftVec.y = y;
+
+  // Get rectangle
+  vector<double> rec = NewBox(pressVec, liftVec);
   QRectF crop = QRectF(rec[0], rec[1], rec[2], rec[3]);
   QString str = page->text(crop, Poppler::Page::RawOrderLayout);
   qDebug() << str;
-  lastVec.x = x;
-  lastVec.y = y;
 }
 
 // void PageLabel::paintEvent(QPaintEvent *e) {
@@ -85,7 +102,7 @@ int main(int argc, char **argv) {
   window->setWindowTitle(QString::fromUtf8("CookieCutter"));
   QWidget *centralWidget = new QWidget(window);
   QTabWidget *tabs = new QTabWidget(centralWidget);
-
+  tabs->setTabsClosable(true);
   //tabs->setFixedSize(495, 495);
   //tabs->addTab(new QWidget(),"TAB 1");
   //
