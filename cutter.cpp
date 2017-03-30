@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
     cout << page << endl;
     PageLabel *label = new PageLabel();
     if (page) {
-      QImage image = page->renderToImage();
+      QImage image = page->renderToImage(1.1 );
       // image.save();
       // sets parent of label to main window
       label->page = page;
